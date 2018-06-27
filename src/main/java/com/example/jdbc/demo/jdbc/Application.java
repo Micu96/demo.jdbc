@@ -1,27 +1,17 @@
 package com.example.jdbc.demo.jdbc;
 
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import java.io.*;
+import java.util.*;
+import java.util.function.Function;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.example.jdbc.demo.jdbc.DAO.*;
+
+import static java.util.stream.Collectors.toList;
 
 
 @SpringBootApplication
@@ -32,33 +22,99 @@ public class Application {
 
 	public static void main(String[] args) throws IOException {
 
-		File myFile = new File("/home/michal/Dokumenty/plik.xls");
+		File myFileRatings = new File("/home/michal/Dokumenty/plik_ratings.csv");
+		File myFileTitles = new File("/home/michal/Dokumenty/data.csv");
 
-		FileInputStream fileInputStream = new FileInputStream(myFile);
+		BufferedReader bufferedReaderRatings = null;
+		BufferedReader bufferedReaderTitles = null;
 
-		HSSFWorkbook myWorkBook = new HSSFWorkbook(new FileInputStream(myFile));
-		HSSFSheet mySheet = myWorkBook.getSheetAt(0);
-		Iterator<Row> iterator = mySheet.iterator();
+		String lineRatings = "";
+		String lineTitles ="";
+		int mapIncrement = 0;
+		int listIncrement= 0;
+		int size = 0;
 
-		while (iterator.hasNext()) {
-			Row row = iterator.next();
+		try {
+			bufferedReaderRatings = new BufferedReader(new FileReader(myFileRatings));
+			bufferedReaderTitles = new BufferedReader(new FileReader(myFileTitles));
+			Map<Integer,RatingsClass> ratingsMap = new TreeMap<>();
+			List<MoviesClass> moviesClassesList = new ArrayList<>();
 
-			Iterator<Cell> cellIterator = row.cellIterator();
-			while (cellIterator.hasNext()) {
+			while ((lineRatings = bufferedReaderRatings.readLine()) != null){
 
-				Cell cell = cellIterator.next();
+				String[] split = lineRatings.split("\t");
 
-				//int numericCellValue = (int)cell.getNumericCellValue();
-				Cell cell1 = row.getCell(1);
-
-
-				List<Object[]> movies = Arrays.asList(cell1.toString()).stream()
-						.map(name -> name.split(" "))
-						.collect(Collectors.toList());
-
-				movies.forEach(name -> log.info(String.format("Inserting customer record for %s", name[0])));
+				ratingsMap.put(mapIncrement++,new RatingsClass(split[0],split[1],split[2]));
 
 			}
+
+			while((lineTitles = bufferedReaderTitles.readLine())!=null && size++<20){
+
+				String[] split = lineTitles.split("\t");
+
+
+//				moviesClassesList.add(listIncrement++,new MoviesClass(split[0],split[1],split[2],split[3],Boolean.parseBoolean(split[4])
+//						,split[5],split[6],split[7],split[8]));
+
+
+				moviesClassesList = Arrays.asList(lineTitles)
+						.stream()
+						.map(x->x.split("\t"))
+						.map(x->new MoviesClass())
+						.collect(toList());
+
+			}
+
+
+			moviesClassesList.forEach(x->System.out.println(x.toString()));
+
+
+
+
+
+
+
+
+
+
+
+
+//						movies.forEach(name-> log.info(String.format("%s %s %s %s %s %s %s %s %s ",
+//									name[0],name[1],name[2],name[3],name[4],name[5],name[6],name[7],name[8])));
+
+
+
+
+//			while((lineRatings = bufferedReaderRatings.readLine())!=null){
+//
+//
+//					ratings = Arrays.asList(lineRatings).stream()
+//						.map(name -> name.split("\t"))
+//						.collect(Collectors.toList());
+//
+//
+//			}
+
+
+
+		}
+		catch (NullPointerException e){
+			System.out.println(e);
+		}
+		catch(IOException e){
+			System.out.println(e);
+		}
+		finally {
+
+			bufferedReaderRatings.close();
+			bufferedReaderTitles.close();
+		}
+
+
+
+
+
+
 
 
 		}
@@ -67,7 +123,7 @@ public class Application {
 	}
 
 
-}
+
 
 
 
