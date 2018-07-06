@@ -1,18 +1,21 @@
 package com.example.jdbc.demo.jdbc.DAO;
 
-public class RatingsClass {
+public class Rating {
 
     private String id;
-    private String ratings;
-    private String votesNumbers;
+    private int ratings;
+    private long votesNumbers;
 
-    public RatingsClass() {
+    public Rating() {
     }
 
-    public RatingsClass(String id, String ratings, String votesNumbers) {
-        this.id = id;
-        this.ratings = ratings;
-        this.votesNumbers = votesNumbers;
+
+    public Rating(String[] args){
+
+        this.id = args[0];
+        this.ratings = Integer.parseInt(args[1]);
+        this.votesNumbers = Long.parseLong(args[2]);
+
     }
 
     public String getId() {
@@ -23,25 +26,25 @@ public class RatingsClass {
         this.id = id;
     }
 
-    public String getRatings() {
+    public int getRatings() {
         return ratings;
     }
 
-    public void setRatings(String ratings) {
+    public void setRatings(int ratings) {
         this.ratings = ratings;
     }
 
-    public String getVotesNumbers() {
+    public long getVotesNumbers() {
         return votesNumbers;
     }
 
-    public void setVotesNumbers(String votesNumbers) {
+    public void setVotesNumbers(long votesNumbers) {
         this.votesNumbers = votesNumbers;
     }
 
     @Override
     public String toString() {
-        return "RatingsClass{" +
+        return "Rating{" +
                 "id=" + id +
                 ", ratings=" + ratings +
                 ", votesNumbers=" + votesNumbers +

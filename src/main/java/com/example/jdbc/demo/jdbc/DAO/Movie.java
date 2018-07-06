@@ -1,8 +1,7 @@
 package com.example.jdbc.demo.jdbc.DAO;
 
-import java.util.Arrays;
 
-public class MoviesClass {
+public class Movie {
 
     private String id;
     private String titleType;
@@ -12,22 +11,31 @@ public class MoviesClass {
     private String startYear;
     private String endYear;
     private String runtimeMinutes;
-    private String generes;
+    private String generes1;
+    private String generes2;
+    private String generes3;
 
-    public MoviesClass() {
+    private Rating rating;
+
+    public Movie() {
     }
 
-    public MoviesClass(String id, String titleType, String primaryTitle, String originalTitle, boolean isAdult, String startYear,
-                       String endYear, String runtimeMinutes,String generes) {
-        this.id = id;
-        this.titleType = titleType;
-        this.primaryTitle = primaryTitle;
-        this.originalTitle = originalTitle;
-        this.isAdult = isAdult;
-        this.startYear = startYear;
-        this.endYear = endYear;
-        this.runtimeMinutes = runtimeMinutes;
-        this.generes = generes;
+
+    public Movie(String[] args,String[] generes, Rating rating) {
+
+            this.rating = rating;
+            this.id = args[0];
+            this.titleType = args[1];
+            this.primaryTitle = args[2];
+            this.originalTitle = args[3];
+            this.isAdult = Boolean.parseBoolean(args[4]);
+            this.startYear = (args[5]);
+            this.endYear = args[6];
+            this.runtimeMinutes = args[7];
+            this.generes1 = generes[0];
+            this.generes2 = generes[1];
+            this.generes3 = generes[2];
+
     }
 
     public String getId() {
@@ -70,6 +78,7 @@ public class MoviesClass {
         isAdult = adult;
     }
 
+
     public String getStartYear() {
         return startYear;
     }
@@ -94,17 +103,41 @@ public class MoviesClass {
         this.runtimeMinutes = runtimeMinutes;
     }
 
-    public String getGeneres() {
-        return generes;
+    public String getGeneres1() {
+        return generes1;
     }
 
-    public void setGeneres(String generes) {
-        this.generes = generes;
+    public void setGeneres1(String generes1) {
+        this.generes1 = generes1;
+    }
+
+    public String getGeneres2() {
+        return generes2;
+    }
+
+    public void setGeneres2(String generes2) {
+        this.generes2 = generes2;
+    }
+
+    public String getGeneres3() {
+        return generes3;
+    }
+
+    public void setGeneres3(String generes3) {
+        this.generes3 = generes3;
+    }
+
+    public Rating getRating() {
+        return rating;
+    }
+
+    public void setRating(Rating rating) {
+        this.rating = rating;
     }
 
     @Override
     public String toString() {
-        return "MoviesClass{" +
+        return "Movie{" +
                 "id='" + id + '\'' +
                 ", titleType='" + titleType + '\'' +
                 ", primaryTitle='" + primaryTitle + '\'' +
@@ -113,7 +146,10 @@ public class MoviesClass {
                 ", startYear=" + startYear +
                 ", endYear=" + endYear +
                 ", runtimeMinutes=" + runtimeMinutes +
-                ", generes=" + (generes) +
+                ", generes1='" + generes1 + '\'' +
+                ", generes2='" + generes2 + '\'' +
+                ", generes3='" + generes3 + '\'' +
+                ", rating=" + rating +
                 '}';
     }
 }

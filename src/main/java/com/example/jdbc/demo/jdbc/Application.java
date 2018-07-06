@@ -1,126 +1,151 @@
 package com.example.jdbc.demo.jdbc;
 
-
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import com.example.jdbc.demo.jdbc.DAO.Reader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 import java.io.*;
+import java.sql.*;
 import java.util.*;
-import java.util.function.Function;
-
 import com.example.jdbc.demo.jdbc.DAO.*;
+import com.example.jdbc.demo.jdbc.repositiores.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-import static java.util.stream.Collectors.toList;
-
-
-@SpringBootApplication
+@Component
 public class Application {
+
 
 	private static final Logger log = LoggerFactory.getLogger(Application.class);
 
 
-	public static void main(String[] args) throws IOException {
 
-		File myFileRatings = new File("/home/michal/Dokumenty/plik_ratings.csv");
-		File myFileTitles = new File("/home/michal/Dokumenty/data.csv");
+	private static Connection connection;
+	private static BufferedReader bufferedReaderTitles;
+	private static BufferedReader bufferedReaderRatings;
+	private static BufferedReader bufferedReaderCrew;
+	private static BufferedReader bufferedReaderPrincipals;
+	private static final int maxRecordNumber = 1000;
 
-		BufferedReader bufferedReaderRatings = null;
-		BufferedReader bufferedReaderTitles = null;
+	private static final File myFileTitles = new File("/home/michal/Dokumenty/data.csv");
+	private static final File myFileRatings = new File("/home/michal/Dokumenty/ratings.csv");
+	private static final File myFileCrew = new File("/home/michal/Dokumenty/crew_data.csv");
+	private static final File myFilePrincipals = new File("/home/michal/Dokumenty/principals_data.csv");
 
-		String lineRatings = "";
-		String lineTitles ="";
-		int mapIncrement = 0;
-		int listIncrement= 0;
-		int size = 0;
+
+
+
+	public static void main(String[] args) throws SQLException, IOException {
 
 		try {
-			bufferedReaderRatings = new BufferedReader(new FileReader(myFileRatings));
-			bufferedReaderTitles = new BufferedReader(new FileReader(myFileTitles));
-			Map<Integer,RatingsClass> ratingsMap = new TreeMap<>();
-			List<MoviesClass> moviesClassesList = new ArrayList<>();
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
+			connection = DriverManager
+					.getConnection("jdbc:mysql://127.0.0.1:3306/?user=root","root","Kolega66.");
+			connection.setAutoCommit(false);
+//			buildMovieDB();
+//			connection.commit();
+//			buildCrewDB();
+//			connection.commit();
+			buildPrincipalDB();
+			connection.commit();
 
-			while ((lineRatings = bufferedReaderRatings.readLine()) != null){
 
-				String[] split = lineRatings.split("\t");
+		}
+		catch (Exception e) {
+            System.out.println(e.getMessage());
 
-				ratingsMap.put(mapIncrement++,new RatingsClass(split[0],split[1],split[2]));
+        }  finally{
+			connection.close();
+			if(bufferedReaderRatings != null) {
+				bufferedReaderRatings.close();
+			}
+			if( bufferedReaderTitles != null) {
+				bufferedReaderTitles.close();
+			}
+			if(bufferedReaderCrew != null ) {
+				bufferedReaderCrew.close();
+			}
+			if(bufferedReaderPrincipals != null){
+				bufferedReaderPrincipals.close();
+			}
+		}
+        //Koniec - datatime
+	}
+	public static void buildMovieDB() throws SQLException, IOException {
+		bufferedReaderRatings = new BufferedReader(new FileReader(myFileRatings));
+		bufferedReaderTitles = new BufferedReader(new FileReader(myFileTitles));
+		Map<String, Rating> ratings = Reader.readRatings(bufferedReaderRatings);
+		//Start datetime
+		SqlUtils.createTableMovies(connection);
 
+		int recCnt = 0;
+
+		List<Movie> movies;
+
+		while(true) {
+			movies = Reader.readMovies(bufferedReaderTitles, ratings,maxRecordNumber);
+			SqlUtils.insertIntoTableMovies(connection, movies);
+
+			if (movies.size() < maxRecordNumber) {
+				break;
+			}
+			recCnt += movies.size();
+
+			System.out.println(recCnt);
+
+		}
+
+	}
+
+	public static void buildCrewDB() throws SQLException, IOException {
+		Set<String> imdbIds = MovieRepo.readImdbIds(connection);
+		bufferedReaderCrew = new BufferedReader(new FileReader(myFileCrew));
+		SqlUtils.createTableCrew(connection);
+		int result = 0;
+
+		while(true) {
+
+			List<Crew> crews = Reader.readCrew(imdbIds, bufferedReaderCrew, maxRecordNumber);
+
+			SqlUtils.insertIntoCrewTable(connection, crews);
+
+			if(crews.size() < 1000){
+				break;
 			}
 
-			while((lineTitles = bufferedReaderTitles.readLine())!=null && size++<20){
-
-				String[] split = lineTitles.split("\t");
-
-
-//				moviesClassesList.add(listIncrement++,new MoviesClass(split[0],split[1],split[2],split[3],Boolean.parseBoolean(split[4])
-//						,split[5],split[6],split[7],split[8]));
-
-
-				moviesClassesList = Arrays.asList(lineTitles)
-						.stream()
-						.map(x->x.split("\t"))
-						.map(x->new MoviesClass())
-						.collect(toList());
-
-			}
-
-
-			moviesClassesList.forEach(x->System.out.println(x.toString()));
-
-
-
-
-
-
-
-
-
-
-
-
-//						movies.forEach(name-> log.info(String.format("%s %s %s %s %s %s %s %s %s ",
-//									name[0],name[1],name[2],name[3],name[4],name[5],name[6],name[7],name[8])));
-
-
-
-
-//			while((lineRatings = bufferedReaderRatings.readLine())!=null){
-//
-//
-//					ratings = Arrays.asList(lineRatings).stream()
-//						.map(name -> name.split("\t"))
-//						.collect(Collectors.toList());
-//
-//
-//			}
-
-
-
-		}
-		catch (NullPointerException e){
-			System.out.println(e);
-		}
-		catch(IOException e){
-			System.out.println(e);
-		}
-		finally {
-
-			bufferedReaderRatings.close();
-			bufferedReaderTitles.close();
-		}
-
-
-
-
-
-
-
+			result += crews.size();
+			System.out.println(result);
 
 		}
 
 
 	}
+
+	public static void buildPrincipalDB() throws SQLException, IOException {
+
+		SqlUtils.createTablePrincipal(connection);
+		bufferedReaderPrincipals = new BufferedReader(new FileReader(myFilePrincipals));
+		Set<String> imdbIds = MovieRepo.readImdbIds(connection);
+		int inserted = 0;
+
+		while(true) {
+			List<Crew> principals = Reader.readPrincipal(imdbIds, bufferedReaderPrincipals, maxRecordNumber);
+			SqlUtils.insertIntoPrincipalTable(principals, connection);
+
+			if(principals.size()<1000){
+				break;
+			}
+
+			inserted += principals.size();
+			System.out.println(inserted);
+
+		}
+	}
+
+
+
+
+}
 
 
 
