@@ -2,22 +2,22 @@ package com.example.jdbc.demo.jdbc.DAO;
 
 public class Crew {
     public enum Role{
-        Director, Writer,Self,Cinematographer
-        ,Composer,Editor, Actor, Producer,Actress
-        , Production_designer,Archive_sound, Archive_footage
+        director, writer,self,cinematographer
+        ,composer,editor, actor, producer,actress
+        , production_designer,archive_sound, archive_footage
     }
 
 
     private String id;
     private String name_id;
-    private String role;
+    private Role role;
     private int order;
 
     public Crew() {
     }
 
 
-    public Crew( String id, String name_id, String role){
+    public Crew( String id, String name_id, Role role){
 
         this.id = id;
         this.name_id = name_id;
@@ -25,7 +25,7 @@ public class Crew {
 
     }
 
-    public Crew(String id, String order, String name_id, String role) {
+    public Crew(String id, String order, String name_id, Role role) {
         this.id = id;
         this.order = Integer.parseInt(order);
         this.name_id = name_id;
@@ -59,11 +59,11 @@ public class Crew {
         this.name_id = name_id;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
     public int getOrder() {

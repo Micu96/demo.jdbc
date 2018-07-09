@@ -12,22 +12,40 @@ public class MovieRepo  {
     public static Set<String> readImdbIds(Connection connection) throws SQLException {
         //read ids from Movie tabele
 
-        Set<String> imdbIdSet= new HashSet<>();
+        Set<String> imdbIdSet = new HashSet<>();
         Statement statement = connection.createStatement();
 
         String sql = "Select * from database.Movies;";
 
         ResultSet resultSet = statement.executeQuery(sql);
 
-        while(resultSet.next()) {
+        while (resultSet.next()) {
             String string = resultSet.getString(1);
 
             imdbIdSet.add(string);
 
         }
-        System.out.println("Rozmiar imdbList : " + imdbIdSet.size());
+
         return imdbIdSet;
     }
 
+
+    public static Set<String> readNameIds(Connection connection) throws SQLException {
+
+        Set<String> nameIds = new HashSet<>();
+
+        Statement statement = connection.createStatement();
+
+        String sql = "Select * from `database`.`Principal`;";
+
+        ResultSet resultSet = statement.executeQuery(sql);
+
+        while(resultSet.next()){
+            String nameId = resultSet.getString(3);
+            nameIds.add(nameId);
+        }
+
+        return nameIds;
+    }
 
 }

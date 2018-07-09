@@ -1,4 +1,12 @@
-package com.example.jdbc.demo.jdbc.DAO;
+package com.example.jdbc.demo.jdbc.repositiores;
+
+import com.example.jdbc.demo.jdbc.DAO.Akas;
+import com.example.jdbc.demo.jdbc.DAO.Crew;
+import com.example.jdbc.demo.jdbc.DAO.Movie;
+import com.example.jdbc.demo.jdbc.DAO.Name;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.io.IOException;
 import java.sql.*;
@@ -6,8 +14,10 @@ import java.util.Iterator;
 import java.util.List;
 
 
+
 public class SqlUtils {
 
+    private static final Logger log = LoggerFactory.getLogger(SqlUtils.class);
 
     public static void createTableMovies(Connection connection) throws SQLException {
 
@@ -81,7 +91,7 @@ public class SqlUtils {
 
 
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                log.error(e.getMessage());
             }
             preparedStatement.executeBatch();
 
@@ -124,12 +134,12 @@ public class SqlUtils {
 
                 preparedStatement.setString(1,c.getId());
                 preparedStatement.setString(2,c.getName_id());
-                preparedStatement.setString(3,c.getRole());
+                preparedStatement.setString(3,c.getRole().toString());
 
                 preparedStatement.addBatch();
             }
             catch (Exception e){
-
+                log.error(e.getMessage());
             }
 
             preparedStatement.executeBatch();
@@ -172,14 +182,131 @@ public class SqlUtils {
                 preparedStatement.setString(1, crew.getId());
                 preparedStatement.setInt(2, crew.getOrder());
                 preparedStatement.setString(3, crew.getName_id());
-                preparedStatement.setString(4, crew.getRole());
+                preparedStatement.setString(4, crew.getRole().toString());
 
 
                 preparedStatement.addBatch();
 
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                log.error(e.getMessage());
             }
+        }
+
+        preparedStatement.executeBatch();
+
+    }
+    public static void createTableName(Connection connection) throws SQLException {
+        Statement statement = connection.createStatement();
+        String sqlDrop = "DROP TABLE IF EXISTS `database`.`Name`;";
+        statement.executeUpdate(sqlDrop);
+
+        String sqlCreate = "CREATE TABLE database.Name" +
+                " (`name_id` VARCHAR(120) NOT NULL," +
+                "`primary_name` VARCHAR(120) NOT NULL, " +
+                "`birth_year` INT NULL," +
+                "`death_year` INT NULL," +
+                "PRIMARY KEY(`name_id`));";
+
+        statement.executeUpdate(sqlCreate);
+
+    }
+
+    public static void insertIntoNameTable(List<Name> nameList, Connection connection) throws SQLException {
+
+        String sqlInsert = "INSERT INTO `database`.`Name` VALUES(?,?,?,?);";
+
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
+
+        Iterator<Name> iterator = nameList.iterator();
+        int value = 0;
+
+        while(iterator.hasNext()){
+
+            try{
+
+                Name name = iterator.next();
+                preparedStatement.setString(1,name.getName_id());
+                preparedStatement.setString(2,name.getPrimaryName());
+                if(name.getBirthYear().equals("\\N")){
+                    preparedStatement.setNull(3,Types.INTEGER);
+                }
+                else {
+                    preparedStatement.setInt(3, Integer.parseInt(name.getBirthYear()));
+                }
+                if(name.getDeathYear().equals("\\N")){
+                    preparedStatement.setNull(4,Types.INTEGER);
+                }
+                else{
+                    preparedStatement.setInt(4,Integer.parseInt(name.getDeathYear()));
+                }
+            }
+            catch (Exception e){
+                log.error(e.getMessage());
+            }
+            //System.out.println(value++);
+            preparedStatement.addBatch();
+        }
+
+        preparedStatement.executeBatch();
+
+    }
+    public static void createTableAkas(Connection connection) throws SQLException {
+
+        Statement statement = connection.createStatement();
+
+        String sqlDrop = "DROP TABLE IF EXISTS database.Akas;";
+        statement.executeUpdate(sqlDrop);
+
+        String sqlCreate = "CREATE TABLE database.Akas (" +
+                "`title_id` VARCHAR(120) NOT NULL," +
+                "`ordering` VARCHAR(120) NOT NULL," +
+                "`title` VARCHAR(500) NOT NULL," +
+                "`region` VARCHAR(120) NULL," +
+                "`language` VARCHAR(120) NULL," +
+                "`is_original_title` TINYINT(2) NOT NULL);";
+
+        statement.executeUpdate(sqlCreate);
+
+    }
+    public static void insertIntoAkasTable(List<Akas> akasList, Connection connection) throws SQLException {
+
+        String sqlInsert = "INSERT INTO database.Akas VALUES (?,?,?,?,?,?);";
+
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
+
+        Iterator<Akas> iterator = akasList.iterator();
+
+        while(iterator.hasNext()){
+
+            try {
+
+                Akas akas = iterator.next();
+
+                preparedStatement.setString(1,akas.getImdb_id());
+                preparedStatement.setInt(2,akas.getOrder());
+                preparedStatement.setString(3,akas.getTitle());
+                if(akas.getRegion().equals("\\N")){
+                    preparedStatement.setNull(4,Types.INTEGER);
+                }
+                else{
+                    preparedStatement.setString(4,akas.getRegion());
+                }
+                if(akas.getLanguage().equals("\\N")){
+                    preparedStatement.setNull(5,Types.INTEGER);
+                }
+                else{
+                    preparedStatement.setString(5,akas.getLanguage());
+                }
+                preparedStatement.setBoolean(6,akas.isOriginTitle());
+
+                preparedStatement.addBatch();
+
+            }
+            catch (Exception e){
+                log.error(e.getMessage());
+            }
+
+
         }
 
         preparedStatement.executeBatch();
