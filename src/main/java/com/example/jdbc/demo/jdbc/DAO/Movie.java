@@ -137,7 +137,7 @@ public class Movie {
 
     @Override
     public String toString() {
-        return "Movie{" +
+        return "Movies{" +
                 "id='" + id + '\'' +
                 ", titleType='" + titleType + '\'' +
                 ", primaryTitle='" + primaryTitle + '\'' +

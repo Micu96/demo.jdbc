@@ -1,6 +1,9 @@
 package com.example.jdbc.demo.jdbc.Logic;
 
 import com.example.jdbc.demo.jdbc.DAO.*;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +15,8 @@ import java.util.*;
 public class Reader {
 
     private static final Logger log = LoggerFactory.getLogger(Builder.class);
+
+
 
     public static Map<String,Rating> readRatings(BufferedReader bufferedReaderRatings) throws IOException {
 
@@ -55,7 +60,7 @@ public class Reader {
 
         List<Movie> list = new LinkedList<>();
         String line;
-        log.info("Reading rows from Movie file");
+        log.info("Reading rows from Movies file");
 
         while ((line = bufferedReaderTitles.readLine()) != null && list.size() < maxRecordNumber) {
             try {
@@ -187,5 +192,86 @@ public class Reader {
         }
         return akasList;
     }
+
+    public static List<BoxOffice> readFromHtml(Set<String> imdbIds, long maxRecordNumber,String url) throws IOException {
+
+        List<BoxOffice> boxOfficeList = new LinkedList<>();
+
+            for (String  imdbId : imdbIds) {
+                try {
+                    String urlAddress = new StringBuilder(url).append(imdbId).toString();
+                    Connection connection = Jsoup.connect(urlAddress);
+
+                    Document document = connection.get();
+                    String budget = document.select("div.txt-block:contains(Budget:)").first().ownText();
+                    String gross = document.select("div.txt-block:contains(Cumulative Worldwide Gross:)").first().ownText();
+
+
+
+                    //boxOfficeList.add(new BoxOffice(imdbId, budget, gross));
+//
+//                    Elements elementsByClass = document.getElementsByClass("txt-block");
+//                    for(Element e : elementsByClass){
+//                        if(e.text().matches("Budget:.*")){
+//                            budget = e.ownText();
+//                            continue;
+//                        }
+//                        if(e.text().matches("Budget:.*")){
+//                            gross = e.ownText();
+//                            break;
+//                        }
+//                    }
+
+                    boxOfficeList.add(new BoxOffice(imdbId, budget, gross));
+                } catch (Exception e) {
+                    boxOfficeList.add(new BoxOffice(imdbId, null, null));
+                    log.info(e.getMessage());
+                }
+            }
+        return boxOfficeList;
+
+    }
+
+
+    public static List<AcademyAward> readOscars(BufferedReader bufferedReader, long maxRecordsNumber) throws IOException {
+
+        List<AcademyAward> academyAwardList = new ArrayList<>();
+        String line;
+
+        while((line = bufferedReader.readLine())!=null && academyAwardList.size()<maxRecordsNumber){
+
+            try{
+                String[] row = line.split("\t");
+                for(String s : row){
+  //                  System.out.println(s);
+                }
+                academyAwardList.add(new AcademyAward(row));
+            }
+            catch (Exception e){
+                log.error(e.getMessage());
+            }
+
+        }
+        return academyAwardList;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

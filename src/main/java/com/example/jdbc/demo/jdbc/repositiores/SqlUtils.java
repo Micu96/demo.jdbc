@@ -1,13 +1,11 @@
 package com.example.jdbc.demo.jdbc.repositiores;
 
-import com.example.jdbc.demo.jdbc.DAO.Akas;
-import com.example.jdbc.demo.jdbc.DAO.Crew;
-import com.example.jdbc.demo.jdbc.DAO.Movie;
-import com.example.jdbc.demo.jdbc.DAO.Name;
+import com.example.jdbc.demo.jdbc.DAO.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+import javax.swing.*;
 import java.io.IOException;
 import java.sql.*;
 import java.util.Iterator;
@@ -89,7 +87,6 @@ public class SqlUtils {
                 preparedStatement.addBatch();
 
 
-
             } catch (Exception e) {
                 log.error(e.getMessage());
             }
@@ -100,7 +97,7 @@ public class SqlUtils {
 
     }
 
-    public static void createTableCrew(Connection connection) throws SQLException{
+    public static void createTableCrew(Connection connection) throws SQLException {
 
         Statement statement = connection.createStatement();
 
@@ -117,8 +114,7 @@ public class SqlUtils {
 
     }
 
-    public static  void insertIntoCrewTable(Connection connection, List<Crew> crewList) throws SQLException {
-
+    public static void insertIntoCrewTable(Connection connection, List<Crew> crewList) throws SQLException {
 
 
         String sqlInsert = "INSERT INTO database.Crew VALUES(?,?,?);";
@@ -126,19 +122,18 @@ public class SqlUtils {
 
         Iterator<Crew> iterator = crewList.iterator();
 
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
 
             try {
 
                 Crew c = iterator.next();
 
-                preparedStatement.setString(1,c.getId());
-                preparedStatement.setString(2,c.getName_id());
-                preparedStatement.setString(3,c.getRole().toString());
+                preparedStatement.setString(1, c.getId());
+                preparedStatement.setString(2, c.getName_id());
+                preparedStatement.setString(3, c.getRole().toString());
 
                 preparedStatement.addBatch();
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 log.error(e.getMessage());
             }
 
@@ -149,6 +144,7 @@ public class SqlUtils {
 
 
     }
+
     public static void createTablePrincipal(Connection connection) throws SQLException {
 
         Statement statement = connection.createStatement();
@@ -165,8 +161,8 @@ public class SqlUtils {
 
 
     }
-    public static void insertIntoPrincipalTable(List<Crew> principalList, Connection connection) throws SQLException {
 
+    public static void insertIntoPrincipalTable(List<Crew> principalList, Connection connection) throws SQLException {
 
 
         String sqlInsert = "INSERT INTO database.Principal VALUES(?,?,?,?);";
@@ -174,7 +170,7 @@ public class SqlUtils {
 
         Iterator<Crew> iterator = principalList.iterator();
 
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             try {
 
                 Crew crew = iterator.next();
@@ -195,6 +191,7 @@ public class SqlUtils {
         preparedStatement.executeBatch();
 
     }
+
     public static void createTableName(Connection connection) throws SQLException {
         Statement statement = connection.createStatement();
         String sqlDrop = "DROP TABLE IF EXISTS `database`.`Name`;";
@@ -220,27 +217,24 @@ public class SqlUtils {
         Iterator<Name> iterator = nameList.iterator();
         int value = 0;
 
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
 
-            try{
+            try {
 
                 Name name = iterator.next();
-                preparedStatement.setString(1,name.getName_id());
-                preparedStatement.setString(2,name.getPrimaryName());
-                if(name.getBirthYear().equals("\\N")){
-                    preparedStatement.setNull(3,Types.INTEGER);
-                }
-                else {
+                preparedStatement.setString(1, name.getName_id());
+                preparedStatement.setString(2, name.getPrimaryName());
+                if (name.getBirthYear().equals("\\N")) {
+                    preparedStatement.setNull(3, Types.INTEGER);
+                } else {
                     preparedStatement.setInt(3, Integer.parseInt(name.getBirthYear()));
                 }
-                if(name.getDeathYear().equals("\\N")){
-                    preparedStatement.setNull(4,Types.INTEGER);
+                if (name.getDeathYear().equals("\\N")) {
+                    preparedStatement.setNull(4, Types.INTEGER);
+                } else {
+                    preparedStatement.setInt(4, Integer.parseInt(name.getDeathYear()));
                 }
-                else{
-                    preparedStatement.setInt(4,Integer.parseInt(name.getDeathYear()));
-                }
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 log.error(e.getMessage());
             }
             //System.out.println(value++);
@@ -250,6 +244,7 @@ public class SqlUtils {
         preparedStatement.executeBatch();
 
     }
+
     public static void createTableAkas(Connection connection) throws SQLException {
 
         Statement statement = connection.createStatement();
@@ -268,6 +263,7 @@ public class SqlUtils {
         statement.executeUpdate(sqlCreate);
 
     }
+
     public static void insertIntoAkasTable(List<Akas> akasList, Connection connection) throws SQLException {
 
         String sqlInsert = "INSERT INTO database.Akas VALUES (?,?,?,?,?,?);";
@@ -276,33 +272,30 @@ public class SqlUtils {
 
         Iterator<Akas> iterator = akasList.iterator();
 
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
 
             try {
 
                 Akas akas = iterator.next();
 
-                preparedStatement.setString(1,akas.getImdb_id());
-                preparedStatement.setInt(2,akas.getOrder());
-                preparedStatement.setString(3,akas.getTitle());
-                if(akas.getRegion().equals("\\N")){
-                    preparedStatement.setNull(4,Types.INTEGER);
+                preparedStatement.setString(1, akas.getImdb_id());
+                preparedStatement.setInt(2, akas.getOrder());
+                preparedStatement.setString(3, akas.getTitle());
+                if (akas.getRegion().equals("\\N")) {
+                    preparedStatement.setNull(4, Types.INTEGER);
+                } else {
+                    preparedStatement.setString(4, akas.getRegion());
                 }
-                else{
-                    preparedStatement.setString(4,akas.getRegion());
+                if (akas.getLanguage().equals("\\N")) {
+                    preparedStatement.setNull(5, Types.INTEGER);
+                } else {
+                    preparedStatement.setString(5, akas.getLanguage());
                 }
-                if(akas.getLanguage().equals("\\N")){
-                    preparedStatement.setNull(5,Types.INTEGER);
-                }
-                else{
-                    preparedStatement.setString(5,akas.getLanguage());
-                }
-                preparedStatement.setBoolean(6,akas.isOriginTitle());
+                preparedStatement.setBoolean(6, akas.isOriginTitle());
 
                 preparedStatement.addBatch();
 
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 log.error(e.getMessage());
             }
 
@@ -313,5 +306,94 @@ public class SqlUtils {
 
     }
 
+    public static void createTableBoxOffice(Connection connection) throws SQLException {
 
+        Statement statement = connection.createStatement();
+
+        String sqlDrop = "DROP TABLE IF EXISTS `database`.`BoxOffice`";
+        statement.executeUpdate(sqlDrop);
+
+        String sqlCreate = "CREATE TABLE `database`.`BoxOffice` (" +
+                "`imdb_id` VARCHAR(120) NOT NULL," +
+                "`budget` VARCHAR(120) NULL," +
+                "`gross` VARCHAR(120) NULL," +
+                "PRIMARY KEY(`imdb_id`));";
+
+        statement.executeUpdate(sqlCreate);
+
+    }
+
+    public static void insertIntoBoxOfficeTable(List<BoxOffice> boxOfficeList, Connection connection) throws SQLException {
+
+        String sqlInsert = "INSERT INTO `database`.`BoxOffice` VALUES(?,?,?);";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
+
+        Iterator<BoxOffice> iterator = boxOfficeList.iterator();
+
+        while (iterator.hasNext()) {
+
+            try {
+                BoxOffice boxOffice = iterator.next();
+
+
+                preparedStatement.setString(1, boxOffice.getImdbId());
+                preparedStatement.setString(2, boxOffice.getBudget());
+                preparedStatement.setString(3, boxOffice.getGross());
+
+                preparedStatement.addBatch();
+
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
+
+        }
+        preparedStatement.executeBatch();
+    }
+
+    public static void createTableOscars(Connection connection) throws SQLException {
+
+        Statement statement = connection.createStatement();
+
+        String sqlDrop = "DROP TABLE IF EXISTS `database`.`Oscars`;";
+
+        statement.executeUpdate(sqlDrop);
+
+        String sqlCreate = "CREATE TABLE `database`.`Oscars` (" +
+                "`title` VARCHAR(120) NOT NULL," +
+                "`w_year`VARCHAR(120) NOT NULL," +
+                "`award` VARCHAR (120) NOT NULL," +
+                "`nomination` VARCHAR (120) NOT NULL," +
+                "`best_picture` VARCHAR (10) NOT NULL);";
+
+
+        statement.executeUpdate(sqlCreate);
+
+    }
+
+    public static void insertIntoOscarsTable(Connection connection, List<AcademyAward> academyAwardList) throws SQLException {
+
+        String sqlInsert = "INSERT INTO `database`.`Oscars` VALUES(?,?,?,?,?);";
+
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
+
+        Iterator<AcademyAward> iterator = academyAwardList.iterator();
+
+        while (iterator.hasNext()) {
+            try {
+                AcademyAward movie = iterator.next();
+
+                preparedStatement.setString(1, movie.getTitle());
+                preparedStatement.setString(2, movie.getWinningYear());
+                preparedStatement.setString(3, movie.getAward());
+                preparedStatement.setString(4, movie.getNomination());
+                preparedStatement.setString(5,movie.getIsBestPicture());
+
+                preparedStatement.addBatch();
+
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
+        }
+        preparedStatement.executeBatch();
+    }
 }
