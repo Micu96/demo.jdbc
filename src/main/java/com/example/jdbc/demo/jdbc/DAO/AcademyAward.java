@@ -1,9 +1,10 @@
 package com.example.jdbc.demo.jdbc.DAO;
 
-import javax.persistence.criteria.CriteriaBuilder;
+
 
 public class AcademyAward {
 
+    private String imdb_id;
     private String title;
     private String award;
     private String nomination;
@@ -11,7 +12,8 @@ public class AcademyAward {
     private String isBestPicture;
 
 
-    public AcademyAward(String[] list) {
+    public AcademyAward(String key,String[] list) {
+        this.imdb_id = key;
         this.title = list[0];
         this.winningYear = list[1];
         this.award = list[2];
@@ -19,6 +21,14 @@ public class AcademyAward {
         this.isBestPicture = list[4];
     }
 
+
+    public String getImdb_id() {
+        return imdb_id;
+    }
+
+    public void setImdb_id(String imdb_id) {
+        this.imdb_id = imdb_id;
+    }
 
     public String getTitle() {
         return title;

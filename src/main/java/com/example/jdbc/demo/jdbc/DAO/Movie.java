@@ -20,8 +20,13 @@ public class Movie {
     public Movie() {
     }
 
+    public Movie(String primaryTitle, String startYear) {
 
-    public Movie(String[] args,String[] generes, Rating rating) {
+        this.primaryTitle = primaryTitle;
+        this.startYear = startYear;
+    }
+
+    public Movie(String[] args, String[] generes, Rating rating) {
 
             this.rating = rating;
             this.id = args[0];
