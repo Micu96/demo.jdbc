@@ -25,8 +25,6 @@ public class Application {
 	private static BufferedReader bufferedReaderAkas;
 
 
-
-
 	public static void main(String[] args) throws SQLException, IOException {
 
 		long starTime = System.nanoTime();
@@ -40,30 +38,29 @@ public class Application {
 			log.info("Connected to database");
 
 			connection.setAutoCommit(false);
-//			log.info("Building Movie table");
-//			buildMovieDB(connection);
-//			connection.commit();
-//			log.info("Movie table committed");
+			log.info("Downloading files from web");
+//			Downloader.download();
+//			log.info("Downloaded");
+			log.info("Building Movie table");
+			buildMovieDB(connection);
+			connection.commit();
+			log.info("Movie table committed");
 //			log.info("Building Crew table");
 //			buildCrewDB(connection);
 //			connection.commit();
-//			log.info("Crew table committed");
-//			log.info("Building Principal table");
-//			buildPrincipalDB(connection);
-//			connection.commit();
-//			log.info("Principal table committed");
-//			log.info("Building Name table");
-//			buildNameDB(connection);
-//			connection.commit();
-//			log.info("Name table committed");
-//			log.info("Building Akas table");
-//			buildAkasDB(connection);
-//			connection.commit();
-//			log.info("Akas table committed");
-//			buildOscarsDB(connection);
-//			connection.commit();
-			buildBoxOfficeDB(connection);
+			log.info("Crew table committed");
+			log.info("Building Principal table");
+			buildPrincipalDB(connection);
 			connection.commit();
+			log.info("Principal table committed");
+			log.info("Building Name table");
+			buildNameDB(connection);
+			connection.commit();
+			log.info("Name table committed");
+			log.info("Building Akas table");
+			buildAkasDB(connection);
+			connection.commit();
+			log.info("Akas table committed");
 
 
 		}
