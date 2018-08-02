@@ -4,6 +4,8 @@ import com.example.jdbc.demo.jdbc.DAO.*;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -199,64 +201,63 @@ public class Reader {
         for (String imdbId : imdbIds) {
             try {
                 String urlAddress = new StringBuilder(url).append(imdbId).toString();
-                Connection connection = Jsoup.connect(urlAddress);
+                Connection connection = Jsoup.connect("https://www.imdb.com/title/tt0120338/");
 
                 Document document = connection.get();
                 String budget = document.select("div.txt-block:contains(Budget:)").first().ownText();
                 String gross = document.select("div.txt-block:contains(Cumulative Worldwide Gross:)").first().ownText();
+                String[] budgetSplit = budget.split("\\d+");
+                String[] grossSplit = gross.split("\\d+");
+                budget = budget.replace(budgetSplit[0],"");
+                gross = gross.replace(grossSplit[0], "");
 
 
-                //boxOfficeList.add(new BoxOffice(imdbId, budget, gross));
-//
-//                    Elements elementsByClass = document.getElementsByClass("txt-block");
-//                    for(Element e : elementsByClass){
-//                        if(e.text().matches("Budget:.*")){
-//                            budget = e.ownText();
-//                            continue;
-//                        }
-//                        if(e.text().matches("Budget:.*")){
-//                            gross = e.ownText();
-//                            break;
-//                        }
-//                    }
-
-                boxOfficeList.add(new BoxOffice(imdbId, budget, gross));
+                boxOfficeList.add(new BoxOffice(imdbId, Integer.parseInt(budget), Integer.parseInt(gross),null));
             } catch (Exception e) {
-                boxOfficeList.add(new BoxOffice(imdbId, null, null));
+                boxOfficeList.add(new BoxOffice(imdbId, null,null,null));
                 log.info(e.getMessage());
             }
         }
         return boxOfficeList;
-
     }
 
-
-    public static List<AcademyAward> readOscars(BufferedReader bufferedReader, long maxRecordsNumber, Map<String, Movie> titlesMap) throws IOException {
+    public static List<AcademyAward> readOscars(Set<String> imdbIds, String url) throws IOException {
 
         List<AcademyAward> academyAwardList = new ArrayList<>();
-        String line;
-
-        while ((line = bufferedReader.readLine()) != null && academyAwardList.size() < maxRecordsNumber) {
-
+        for (String imdbId : imdbIds) {
             try {
-                String[] row = line.split("\t");
-                String title = row[0];
-                String year = row[1];
+                String newUrl = new StringBuilder(url)
+                        .append("/")
+                        .append(imdbId)
+                        .append("/")
+                        .append("awards")
+                        .toString();
 
-                    for (Map.Entry<String, Movie> map : titlesMap.entrySet()) {
-                        if ((map.getValue().getPrimaryTitle().matches(title)) && map.getValue().getStartYear().matches(year)) {
-                            academyAwardList.add(new AcademyAward(map.getKey(), row));
-                            break;
+                Connection connection = Jsoup.connect(newUrl);
+                Document document = connection.get();
+                String[] split = document.title().split(" -");
+                String title = split[0];
+                Element bestPicture = document.select("table").get(0);
+                if (document.select("span.award_category").first().ownText().equals("Oscar")) {
+                    String eventYear = document.select("a[href].event_year").first().ownText();
+                    Elements row = bestPicture.select("td.award_description");
+                    int oscarsAmount = Integer.parseInt(bestPicture.select("td.title_award_outcome").attr("rowspan"));
+
+                    for (int i = 0; i < row.size(); i++) {
+                        if (bestPicture.select("td.title_award_outcome").first().text().equals("Winner Oscar") && i < oscarsAmount) {
+                            academyAwardList.add(new AcademyAward(imdbId, title, eventYear, row.get(i).ownText(), "yes"));
+                        } else {
+                            academyAwardList.add(new AcademyAward(imdbId, title, eventYear, row.get(i).ownText(), "no"));
                         }
                     }
+                }
             } catch (Exception e) {
-                log.error(e.getMessage());
+                log.info(e.getMessage() + " Movie has no awards");
             }
         }
         return academyAwardList;
+
     }
-
-
 }
 
 

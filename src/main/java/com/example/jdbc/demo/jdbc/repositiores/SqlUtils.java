@@ -21,10 +21,10 @@ public class SqlUtils {
 
         //Start execute a query
         Statement statement = connection.createStatement();
-        String sqlDrop = "DROP TABLE IF EXISTS `mydatabase`.`Movies`;";
+        String sqlDrop = "DROP TABLE IF EXISTS `database`.`Movies`;";
         statement.executeUpdate(sqlDrop);
 
-        String sqlCreate = "CREATE TABLE `mydatabase`.`Movies` (\n" +
+        String sqlCreate = "CREATE TABLE `database`.`Movies` (\n" +
                 "  `imdb_id` VARCHAR(120) NOT NULL,\n" +
                 "  `ratings` INT NULL,\n" +
                 "  `votes_number` INT NULL,\n" +
@@ -46,7 +46,7 @@ public class SqlUtils {
     public static void insertIntoTableMovies(Connection connection, List<Movie> moviesList) throws IOException, SQLException {
 
 
-        String sqlInsert = "INSERT INTO mydatabase.Movies VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?);";
+        String sqlInsert = "INSERT INTO database.Movies VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?);";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
         Iterator<Movie> iterator = moviesList.iterator();
 
@@ -101,11 +101,11 @@ public class SqlUtils {
 
         Statement statement = connection.createStatement();
 
-        String sqlDrop = "DROP TABLE IF EXISTS `mydatabase`.`Crew`";
+        String sqlDrop = "DROP TABLE IF EXISTS `database`.`Crew`";
 
         statement.executeUpdate(sqlDrop);
 
-        String sqlCreate = "CREATE TABLE `mydatabase`.`Crew` (\n" +
+        String sqlCreate = "CREATE TABLE `database`.`Crew` (\n" +
                 "  `imdb_id` VARCHAR(120) NOT NULL,\n" +
                 "  `name_id` VARCHAR(120) NOT NULL,\n" +
                 "  `role` VARCHAR(120) NOT NULL);\n";
@@ -117,7 +117,7 @@ public class SqlUtils {
     public static void insertIntoCrewTable(Connection connection, List<Crew> crewList) throws SQLException {
 
 
-        String sqlInsert = "INSERT INTO mydatabase.Crew VALUES(?,?,?);";
+        String sqlInsert = "INSERT INTO database.Crew VALUES(?,?,?);";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
 
         Iterator<Crew> iterator = crewList.iterator();
@@ -148,10 +148,10 @@ public class SqlUtils {
     public static void createTablePrincipal(Connection connection) throws SQLException {
 
         Statement statement = connection.createStatement();
-        String sqlDrop = "DROP TABLE IF EXISTS mydatabase.Principal;";
+        String sqlDrop = "DROP TABLE IF EXISTS database.Principal;";
         statement.executeUpdate(sqlDrop);
 
-        String sqlCreate = "CREATE TABLE mydatabase.Principal (\n" +
+        String sqlCreate = "CREATE TABLE database.Principal (\n" +
                 "  `imdb_id` VARCHAR(120) NOT NULL,\n" +
                 "  `ordering` INT NOT NULL,\n" +
                 "  `name_id` VARCHAR(120) NULL,\n" +
@@ -165,7 +165,7 @@ public class SqlUtils {
     public static void insertIntoPrincipalTable(List<Crew> principalList, Connection connection) throws SQLException {
 
 
-        String sqlInsert = "INSERT INTO mydatabase.Principal VALUES(?,?,?,?);";
+        String sqlInsert = "INSERT INTO database.Principal VALUES(?,?,?,?);";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
 
         Iterator<Crew> iterator = principalList.iterator();
@@ -194,10 +194,10 @@ public class SqlUtils {
 
     public static void createTableName(Connection connection) throws SQLException {
         Statement statement = connection.createStatement();
-        String sqlDrop = "DROP TABLE IF EXISTS `mydatabase`.`Name`;";
+        String sqlDrop = "DROP TABLE IF EXISTS `database`.`Name`;";
         statement.executeUpdate(sqlDrop);
 
-        String sqlCreate = "CREATE TABLE mydatabase.Name" +
+        String sqlCreate = "CREATE TABLE database.Name" +
                 " (`name_id` VARCHAR(120) NOT NULL," +
                 "`primary_name` VARCHAR(120) NOT NULL, " +
                 "`birth_year` INT NULL," +
@@ -210,7 +210,7 @@ public class SqlUtils {
 
     public static void insertIntoNameTable(List<Name> nameList, Connection connection) throws SQLException {
 
-        String sqlInsert = "INSERT INTO `mydatabase`.`Name` VALUES(?,?,?,?);";
+        String sqlInsert = "INSERT INTO `database`.`Name` VALUES(?,?,?,?);";
 
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
 
@@ -249,10 +249,10 @@ public class SqlUtils {
 
         Statement statement = connection.createStatement();
 
-        String sqlDrop = "DROP TABLE IF EXISTS mydatabase.Akas;";
+        String sqlDrop = "DROP TABLE IF EXISTS database.Akas;";
         statement.executeUpdate(sqlDrop);
 
-        String sqlCreate = "CREATE TABLE mydatabase.Akas (" +
+        String sqlCreate = "CREATE TABLE database.Akas (" +
                 "`title_id` VARCHAR(120) NOT NULL," +
                 "`ordering` VARCHAR(120) NOT NULL," +
                 "`title` VARCHAR(500) NOT NULL," +
@@ -266,7 +266,7 @@ public class SqlUtils {
 
     public static void insertIntoAkasTable(List<Akas> akasList, Connection connection) throws SQLException {
 
-        String sqlInsert = "INSERT INTO mydatabase.Akas VALUES (?,?,?,?,?,?);";
+        String sqlInsert = "INSERT INTO database.Akas VALUES (?,?,?,?,?,?);";
 
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
 
@@ -310,13 +310,14 @@ public class SqlUtils {
 
         Statement statement = connection.createStatement();
 
-        String sqlDrop = "DROP TABLE IF EXISTS `mydatabase`.`BoxOffice`";
+        String sqlDrop = "DROP TABLE IF EXISTS `database`.`BoxOffice`";
         statement.executeUpdate(sqlDrop);
 
-        String sqlCreate = "CREATE TABLE `mydatabase`.`BoxOffice` (" +
+        String sqlCreate = "CREATE TABLE `database`.`BoxOffice` (" +
                 "`imdb_id` VARCHAR(120) NOT NULL," +
-                "`budget` VARCHAR(120) NULL," +
-                "`gross` VARCHAR(120) NULL," +
+                "`budget` INT (120) NULL," +
+                "`gross` INT (120) NULL," +
+                "`crnc` VARCHAR (120) NULL,"+
                 "PRIMARY KEY(`imdb_id`));";
 
         statement.executeUpdate(sqlCreate);
@@ -325,7 +326,7 @@ public class SqlUtils {
 
     public static void insertIntoBoxOfficeTable(List<BoxOffice> boxOfficeList, Connection connection) throws SQLException {
 
-        String sqlInsert = "INSERT INTO `mydatabase`.`BoxOffice` VALUES(?,?,?);";
+        String sqlInsert = "INSERT INTO `database`.`BoxOffice` VALUES(?,?,?,?);";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
 
         Iterator<BoxOffice> iterator = boxOfficeList.iterator();
@@ -337,8 +338,9 @@ public class SqlUtils {
 
 
                 preparedStatement.setString(1, boxOffice.getImdbId());
-                preparedStatement.setString(2, boxOffice.getBudget());
-                preparedStatement.setString(3, boxOffice.getGross());
+                preparedStatement.setInt(2, boxOffice.getBudget());
+                preparedStatement.setInt(3, boxOffice.getGross());
+                preparedStatement.setString(4,boxOffice.getCurrency());
 
                 preparedStatement.addBatch();
 
@@ -354,17 +356,16 @@ public class SqlUtils {
 
         Statement statement = connection.createStatement();
 
-        String sqlDrop = "DROP TABLE IF EXISTS `mydatabase`.`Oscars`;";
+        String sqlDrop = "DROP TABLE IF EXISTS `database`.`Oscars`;";
 
         statement.executeUpdate(sqlDrop);
 
-        String sqlCreate = "CREATE TABLE `mydatabase`.`Oscars` (" +
+        String sqlCreate = "CREATE TABLE `database`.`Oscars` (" +
                 "`imdb_id` VARCHAR(120) NOT NULL,"+
                 "`title` VARCHAR(255) NOT NULL," +
                 "`w_year`VARCHAR(120) NOT NULL," +
-                "`award` VARCHAR (120) NOT NULL," +
                 "`nomination` VARCHAR (120) NOT NULL," +
-                "`best_picture` VARCHAR (10) NOT NULL);";
+                "`win` VARCHAR (120) NOT NULL);";
 
 
         statement.executeUpdate(sqlCreate);
@@ -373,7 +374,7 @@ public class SqlUtils {
 
     public static void insertIntoOscarsTable(Connection connection, List<AcademyAward> academyAwardList) throws SQLException {
 
-        String sqlInsert = "INSERT INTO `mydatabase`.`Oscars` VALUES(?,?,?,?,?,?);";
+        String sqlInsert = "INSERT INTO `database`.`Oscars` VALUES(?,?,?,?,?);";
 
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
 
@@ -383,11 +384,11 @@ public class SqlUtils {
             try {
                 AcademyAward movie = iterator.next();
                 preparedStatement.setString(1,movie.getImdb_id());
-                preparedStatement.setString(2, movie.getTitle());
-                preparedStatement.setString(3, movie.getWinningYear());
-                preparedStatement.setString(4, movie.getAward());
-                preparedStatement.setString(5, movie.getNomination());
-                preparedStatement.setString(6,movie.getIsBestPicture());
+                preparedStatement.setString(2, movie.getName_id());
+                preparedStatement.setString(3, movie.getWinning_year());
+                preparedStatement.setString(4, movie.getAward_type());
+                preparedStatement.setString(5, movie.getWin());
+
 
                 preparedStatement.addBatch();
 

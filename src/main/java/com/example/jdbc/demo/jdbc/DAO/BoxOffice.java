@@ -3,13 +3,15 @@ package com.example.jdbc.demo.jdbc.DAO;
 public class BoxOffice {
 
     private String imdbId;
-    private String budget;
-    private String gross;
+    private Integer budget;
+    private Integer gross;
+    private String currency;
 
-    public BoxOffice(String imdbId, String budget, String gross) {
+    public BoxOffice(String imdbId, Integer budget, Integer gross, String currency) {
         this.imdbId = imdbId;
         this.budget = budget;
         this.gross = gross;
+        this.currency = currency;
     }
 
     public String getImdbId() {
@@ -20,19 +22,27 @@ public class BoxOffice {
         this.imdbId = imdbId;
     }
 
-    public String getBudget() {
+    public Integer getBudget() {
         return budget;
     }
 
-    public void setBudget(String budget) {
+    public void setBudget(Integer budget) {
         this.budget = budget;
     }
 
-    public String getGross() {
+    public Integer getGross() {
         return gross;
     }
 
-    public void setGross(String gross) {
+    public void setGross(Integer gross) {
         this.gross = gross;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }

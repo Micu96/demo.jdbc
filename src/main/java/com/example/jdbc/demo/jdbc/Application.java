@@ -60,7 +60,9 @@ public class Application {
 //			buildAkasDB(connection);
 //			connection.commit();
 //			log.info("Akas table committed");
-			buildOscarsDB(connection);
+//			buildOscarsDB(connection);
+//			connection.commit();
+			buildBoxOfficeDB(connection);
 			connection.commit();
 
 

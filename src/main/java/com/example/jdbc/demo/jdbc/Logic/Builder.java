@@ -25,15 +25,16 @@ public class Builder {
     public static BufferedReader bufferedReaderAkas;
     public static BufferedReader bufferedReaderOscars;
     public static final int maxRecordNumber = 10000;
-    public static String url = "https://www.imdb.com/title/";
+    public static String url = "https://www.imdb.com/title";
 
-    private static final File myFileTitles = new File("C:\\Users\\Michał\\Desktop\\pliki imdb\\titles_data.csv");
-    private static final File myFileRatings = new File("C:\\Users\\Michał\\Desktop\\pliki imdb\\ratings.csv");
-    private static final File myFileCrew = new File("C:\\Users\\Michał\\Desktop\\pliki imdb\\crew_data.csv");
-    private static final File myFilePrincipals = new File("C:\\Users\\Michał\\Desktop\\pliki imdb\\principals_data.csv");
-    private static final File myFileNames = new File("C:\\Users\\Michał\\Desktop\\pliki imdb\\name_data.csv");
-    private static final File myFileAkas = new File("C:\\Users\\Michał\\Desktop\\pliki imdb\\akas_data.csv");
-    private static final File myFileOscars = new File("C:\\Users\\Michał\\Desktop\\pliki imdb\\oscars_data.csv");
+
+    private static final File myFileTitles = new File("/home/michal/Dokumenty/titles_data.csv");
+    private static final File myFileRatings = new File("/home/michal/Dokumenty/ratings_data.csv");
+    private static final File myFileCrew = new File("/home/michal/Dokumenty/crew_data.csv");
+    private static final File myFilePrincipals = new File("/home/michal/Dokumenty/principals_data.csv");
+    private static final File myFileNames = new File("/home/michal/Dokumenty/name_data.csv");
+    private static final File myFileAkas = new File("/home/michal/Dokumenty/akas_data.csv");
+    private static final File myFileOscars = new File("/home/michal/Dokumenty/oscars_data.csv");
 
     private static final Logger log = LoggerFactory.getLogger(Builder.class);
 
@@ -180,13 +181,13 @@ public class Builder {
     public static void buildOscarsDB(Connection connection) throws SQLException, IOException {
 
 
-        Map<String, Movie> titles = MovieRepo.readTitlesFromMovies(connection);
-
-
+        Set<String> imdbIds = MovieRepo.readImdbIds(connection);
+//
+//
         SqlUtils.createTableOscars(connection);
-        bufferedReaderOscars = new BufferedReader(new FileReader(myFileOscars));
+//
         while (true){
-            List<AcademyAward> academyAwardList = Reader.readOscars(bufferedReaderOscars,maxRecordNumber,titles);
+            List<AcademyAward> academyAwardList = Reader.readOscars(imdbIds,url);
             SqlUtils.insertIntoOscarsTable(connection,academyAwardList);
             if(academyAwardList.size()<1000){
                 break;
@@ -194,6 +195,7 @@ public class Builder {
             System.out.println("Table Oscar size : " + academyAwardList.size());
 
         }
+        System.out.println("Done!");
 
     }
 

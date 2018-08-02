@@ -33,15 +33,6 @@ public class Name {
         this.primaryName = primaryName;
     }
 
-//    public int getBirthYear() {
-//        return birthYear;
-//    }
-//
-//    public void setBirthYear(int birthYear) {
-//        this.birthYear = birthYear;
-//    }
-
-
     public String getBirthYear() {
         return birthYear;
     }

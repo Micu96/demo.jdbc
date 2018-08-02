@@ -5,22 +5,18 @@ package com.example.jdbc.demo.jdbc.DAO;
 public class AcademyAward {
 
     private String imdb_id;
-    private String title;
-    private String award;
-    private String nomination;
-    private String winningYear;
-    private String isBestPicture;
+    private String name_id;
+    private String winning_year;
+    private String award_type;
+    private String win;
 
-
-    public AcademyAward(String key,String[] list) {
-        this.imdb_id = key;
-        this.title = list[0];
-        this.winningYear = list[1];
-        this.award = list[2];
-        this.nomination = list[3];
-        this.isBestPicture = list[4];
+    public AcademyAward( String imdb_id, String name_id, String winning_year, String award_type, String win) {
+        this.imdb_id = imdb_id;
+        this.name_id = name_id;
+        this.winning_year = winning_year;
+        this.award_type = award_type;
+        this.win = win;
     }
-
 
     public String getImdb_id() {
         return imdb_id;
@@ -30,44 +26,35 @@ public class AcademyAward {
         this.imdb_id = imdb_id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName_id() {
+        return name_id;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName_id(String name_id) {
+        this.name_id = name_id;
     }
 
-    public String getAward() {
-        return award;
+    public String getWinning_year() {
+        return winning_year;
     }
 
-    public void setAward(String award) {
-        this.award = award;
+    public void setWinning_year(String winning_year) {
+        this.winning_year = winning_year;
     }
 
-    public String getNomination() {
-        return nomination;
+    public String getAward_type() {
+        return award_type;
     }
 
-    public void setNomination(String nomination) {
-        this.nomination = nomination;
-
+    public void setAward_type(String award_type) {
+        this.award_type = award_type;
     }
 
-    public String getWinningYear() {
-        return winningYear;
+    public String getWin() {
+        return win;
     }
 
-    public void setWinningYear(String winningYear) {
-        this.winningYear = winningYear;
-    }
-
-    public String getIsBestPicture() {
-        return isBestPicture;
-    }
-
-    public void setIsBestPicture(String isBestPicture) {
-        this.isBestPicture = isBestPicture;
+    public void setWin(String win) {
+        this.win = win;
     }
 }

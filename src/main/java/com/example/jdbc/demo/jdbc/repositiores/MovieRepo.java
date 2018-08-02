@@ -21,7 +21,7 @@ public class MovieRepo  {
         Set<String> imdbIdSet = new HashSet<>();
         Statement statement = connection.createStatement();
 
-        String sql = "Select * from database.Movies limit 1000";
+        String sql = "Select * from database.Movies limit 500";
 
         ResultSet resultSet = statement.executeQuery(sql);
 
@@ -54,26 +54,26 @@ public class MovieRepo  {
         return nameIds;
     }
 
-    public static Map<String,Movie> readTitlesFromMovies(Connection connection) throws SQLException {
-
-        Map<String,Movie> titlesMap = new TreeMap<>();
-
-        Statement statement = connection.createStatement();
-
-        String sqlSelect = "Select * from mydatabase.Movies;";
-
-        ResultSet resultSet = statement.executeQuery(sqlSelect);
-
-        while (resultSet.next()){
-            String imdb_id = resultSet.getString(1);
-            String title = resultSet.getString(5);
-            String year = resultSet.getString(8);
-            titlesMap.put(imdb_id,new Movie(title,year));
-        }
-
-        return titlesMap;
-
-    }
+//    public static Map<String,Movie> readTitlesFromMovies(Connection connection) throws SQLException {
+//
+//        Map<String,Movie> titlesMap = new TreeMap<>();
+//
+//        Statement statement = connection.createStatement();
+//
+//        String sqlSelect = "Select * from database.Movies;";
+//
+//        ResultSet resultSet = statement.executeQuery(sqlSelect);
+//
+//        while (resultSet.next()){
+//            String imdb_id = resultSet.getString(1);
+//            String title = resultSet.getString(5);
+//            String year = resultSet.getString(8);
+//            titlesMap.put(imdb_id,new Movie(title,year));
+//        }
+//
+//        return titlesMap;
+//
+//    }
 
 
 }
